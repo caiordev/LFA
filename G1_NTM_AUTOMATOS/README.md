@@ -1,9 +1,9 @@
 Reconhecimentos e Direitos Autorais
-@autor: Caio Reis Batista, Luís Guilherme Freitas de Almeida Silva
-@contato: caio.reis@discente.ufma.br, luis.gfas@discente.ufma.br
+@autor: Alisson Emanuel Diniz Santos, Caio Reis Batista, Luís Guilherme Freitas de Almeida Silva
+@contato: alisson.emanuel@discente.ufma.br, caio.reis@discente.ufma.br, luis.gfas@discente.ufma.br
 @data última versão: 10/06/2025
 @versão: 1.0
-@outros repositórios: https://github.com/caiordev, https://github.com/lgfas
+@outros repositórios: https://github.com/AlissonDinizSantos, https://github.com/caiordev, https://github.com/lgfas
 @Agradecimentos: Universidade Federal do Maranhão (UFMA), Professor Doutor
 Thales Levi Azevedo Valente, e colegas de curso.
 Copyright/License
