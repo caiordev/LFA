@@ -1,23 +1,55 @@
+"""Main module for benchmarking da Máquina de Turing Paralela.
+
+Este módulo fornece funções utilitárias para:
+
+1. Gerar números binários aleatórios.
+2. Medir desempenho de multiplicação com a máquina de Turing de maneira
+   sequencial ou paralela usando concurrent.futures.ProcessPoolExecutor.
+3. Executar alguns casos de teste quando rodado como script.
+
+Execute python Main.py para ver a demonstração e o benchmark.
+"""
+
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import multiprocessing, time, random
 import TuringMachine as tm_module  # importa o módulo completo para manter referência atualizada
 
 def rand_bin(n: int) -> str:
-    """Gera uma string binária aleatória de n bits."""
+    """Gera uma string binária aleatória.
+
+Args:
+    n: Quantidade de bits.
+
+Returns:
+    Uma string composta exclusivamente por '0' e '1' de tamanho `n`.
+"""
     return ''.join(random.choice("01") for _ in range(n))
 
 def gerar_pares(n: int, k: int):
-    """Gera um iterável com *n* pares (a, b) em binário, cada operando com *k* bits."""
+    """Gera pares de números binários aleatórios.
+
+Args:
+    n: Número de pares a gerar.
+    k: Quantidade de bits de cada operando.
+
+Yields:
+    Tuplas `(a, b)` em que `a` e `b` são strings binárias de tamanho `k`.
+"""
     for _ in range(n):
         yield rand_bin(k), rand_bin(k)
 
 def benchmark(pairs, processes: int | None = None) -> float:
-    """Mede o tempo, em segundos, para multiplicar todas as tuplas *pairs*.
+    """Mede o tempo de execução para multiplicar diversas tuplas.
 
-    Se *processes* == 1 executa de forma sequencial; caso contrário, usa
-    ProcessPoolExecutor em paralelo com *processes* trabalhadores (ou o padrão
-    do sistema quando *processes* é None).
-    """
+Args:
+    pairs: Iterável de tuplas `(a, b)` com operandos binários.
+    processes: Quantidade de processos a usar. `1` força execução
+        sequencial; `None` adota o padrão do sistema; qualquer outro valor
+        define o número de workers para um pool.
+
+Returns:
+    Tempo total decorrido em segundos.
+"""
     start = time.perf_counter()
 
     if processes == 1:
@@ -30,7 +62,7 @@ def benchmark(pairs, processes: int | None = None) -> float:
 
     return time.perf_counter() - start
 
-if __name__ == "__main__":
+if _name_ == "_main_":
     multiprocessing.freeze_support()
 
     # Defina aqui suas multiplicações em binário

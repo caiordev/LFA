@@ -1,12 +1,52 @@
+"""Implementação simplificada de uma Máquina de Turing multi-fita.
+
+O módulo contém:
+
+* TuringMachine — classe que interpreta uma descrição textual de
+  transições e executa a máquina sobre uma fita de entrada.
+* simulate — helper utilizado por Main.py para rodar a máquina em
+  múltiplos processos.
+
+As docstrings seguem as convenções PEP 257 e o estilo Google, de forma a
+facilitar geração de documentação automática por ferramentas como
+Sphinx ou pdoc.
+"""
+
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import multiprocessing, time, random
 
 class TuringMachine:
-    def __init__(self, logic):
+    """Máquina de Turing determinística de fita única.
+
+    A lógica de transição é fornecida como texto, em que cada linha contém
+    cinco campos:
+
+    `current_state current_symbol new_symbol direction new_state`
+
+    Comentários iniciados por ; e linhas em branco são ignorados. O símbolo
+    `*` é curinga para qualquer símbolo. O caráter `_` representa
+    blank.
+
+    Attributes:
+        transitions: Dicionário mapeando pares `(estado, símbolo)` para o
+            tuple `(novo_símbolo, direção, novo_estado)`.
+    """
+    def _init_(self, logic: str):
+        """Construtor.
+
+        Args:
+            logic: Descrição da máquina em formato de texto (veja a descrição
+                da classe para detalhes do formato).
+        """
         self.transitions = {}
         self.parse_logic(logic)
 
-    def parse_logic(self, logic):
+    def parse_logic(self, logic: str) -> None:
+        """Analisa o texto de transições e preenche `self.transitions`.
+
+        Args:
+            logic: Texto contendo regras separadas por quebras de linha.
+        """
         for line in logic.strip().split('\n'):
             line = line.strip()
             if not line or line.startswith(';'):
@@ -24,7 +64,17 @@ class TuringMachine:
 
             self.transitions[(current_state, current_symbol)] = (new_symbol, direction, new_state)
 
-    def run(self, input_tape, show_steps=False):
+    def run(self, input_tape: list[str], show_steps: bool = False) -> str:
+        """Executa a máquina até atingir um estado halt.
+
+        Args:
+            input_tape: Lista de símbolos de entrada. Pode conter `*` como
+                marcador de posição inicial da cabeça.
+            show_steps: Quando `True` imprime cada passo para depuração.
+
+        Returns:
+            String com o conteúdo final da fita.
+        """
         tape = list(input_tape)
         head_position = 0
         state = '0'
@@ -252,8 +302,17 @@ rewrite _ _ r double   ; ' ' => '_' => {R: double}
 
 """
 
-def simulate(pair):
-    """Recebe um tuple (input1, input2) em binário, executa a MT e devolve (input1, input2, resultado_bin)."""
+def simulate(pair: tuple[str, str]) -> tuple[str, str, str]:
+    """Wrapper para execução paralela via `ProcessPoolExecutor`.
+
+    Args:
+        pair: Dupla de strings binárias correspondentes aos fatores.
+
+    Returns:
+        Tuple `(input1, input2, resultado)` onde `resultado` é a
+        multiplicação binária de `input1` por `input2`.
+    """
+
     input1, input2 = pair
     tm = TuringMachine(tm_logic)  # cada processo tem sua própria instância
     tape = list(f"{input1}S{input2}_")
