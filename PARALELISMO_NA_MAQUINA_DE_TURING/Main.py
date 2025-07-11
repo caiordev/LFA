@@ -1,6 +1,6 @@
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import multiprocessing, time, random
-from TuringMachine import simulate # Importa a função simulate
+import TuringMachine as tm_module  # importa o módulo completo para manter referência atualizada
 
 def rand_bin(n: int) -> str:
     """Gera uma string binária aleatória de n bits."""
@@ -22,11 +22,11 @@ def benchmark(pairs, processes: int | None = None) -> float:
 
     if processes == 1:
         for pair in pairs:
-            simulate(pair)
+            tm_module.simulate(pair)
     else:
         pairs = list(pairs)  # Garante que pode ser percorrido mais de uma vez
         with ProcessPoolExecutor(max_workers=processes) as pool:
-            list(pool.map(simulate, pairs))
+            list(pool.map(tm_module.simulate, pairs))
 
     return time.perf_counter() - start
 
@@ -42,7 +42,7 @@ if __name__ == "__main__":
 
     print("Executando casos de teste...")
     with ProcessPoolExecutor() as executor:
-        futures = [executor.submit(simulate, pair) for pair in test_cases]
+        futures = [executor.submit(tm_module.simulate, pair) for pair in test_cases]
         for future in as_completed(futures):
             input1, input2, result = future.result()
             expected = bin(int(input1, 2) * int(input2, 2))[2:]
@@ -50,8 +50,8 @@ if __name__ == "__main__":
             print(f"{input1} * {input2} => {result} (esperado={expected}) -> {'OK' if ok else 'ERRO'}")
 
     print("\n--- Benchmark de desempenho ---")
-    # Exemplo de benchmark: 1000 pares de números binários de 5 bits
-    num_pairs = 1000
+    # Exemplo de benchmark: 10.000 pares de números binários de 5 bits
+    num_pairs = 10000
     num_bits = 5
     generated_pairs = list(gerar_pares(num_pairs, num_bits))
 

@@ -2,7 +2,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 import multiprocessing, time, random
 
 class TuringMachine:
-    def _init_(self, logic):
+    def __init__(self, logic):
         self.transitions = {}
         self.parse_logic(logic)
 
